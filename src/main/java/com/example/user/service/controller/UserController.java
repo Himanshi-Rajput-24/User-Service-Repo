@@ -1,6 +1,7 @@
 package com.example.user.service.controller;
 
 import com.example.user.service.common.ErrorType;
+import com.example.user.service.dto.UserResponseDto;
 import com.example.user.service.entity.UserEntity;
 import com.example.user.service.exceptions.CustomExceptions;
 import com.example.user.service.service.UserService;
@@ -27,7 +28,8 @@ public class UserController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    public List<UserEntity> getUserList() {
+    @GetMapping("/getUserList")
+    public List<UserResponseDto> getUserList() {
         return userService.getUserList();
     }
 

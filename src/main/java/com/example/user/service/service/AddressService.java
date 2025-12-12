@@ -4,6 +4,7 @@ import com.example.user.service.common.ErrorType;
 import com.example.user.service.entity.Address;
 import com.example.user.service.entity.UserEntity;
 import com.example.user.service.exceptions.CustomExceptions;
+import com.example.user.service.repository.AddressRepository;
 import com.example.user.service.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ import java.util.ArrayList;
 public class AddressService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Autowired
     private UserService userService;

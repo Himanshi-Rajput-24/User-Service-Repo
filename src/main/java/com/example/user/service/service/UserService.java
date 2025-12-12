@@ -1,9 +1,12 @@
 package com.example.user.service.service;
 
 import com.example.user.service.common.ErrorType;
+import com.example.user.service.dto.UserRequestDto;
+import com.example.user.service.dto.UserResponseDto;
 import com.example.user.service.entity.Address;
 import com.example.user.service.entity.UserEntity;
 import com.example.user.service.exceptions.CustomExceptions;
+import com.example.user.service.mapper.UserMapper;
 import com.example.user.service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,6 +25,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -29,25 +34,24 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public List<UserEntity> getUserList() {
-        return userRepository.findAll();
+    public List<UserResponseDto> getUserList() {
+        List<UserEntity> userList = userRepository.findAll();
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+        for(UserEntity userEntity : userList){
+            UserResponseDto userResponseDto = userMapper.toDto(userEntity);
+            userResponseDtos.add(userResponseDto);
+        }
+        return userResponseDtos;
     }
 
-    public UserEntity saveUser(UserEntity userEntity) {
-        if (userEntity.getEmailId() == null) {
+    public UserEntity saveUser(UserRequestDto userDto) {
+        if (userDto.getEmailId() == null) {
             throw new CustomExceptions(ErrorType.MISSING_REQUIRED_FIELDS);
         }
         try {
-            userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-
-            if (userEntity.getAddresses() != null) {
-                for (Address address : userEntity.getAddresses()) {
-                    address.setUser(userEntity);
-                }
-            }
-
-            userEntity.setCreatedAt(LocalDateTime.now());
-            userEntity.setUpdateAt(LocalDateTime.now());
+            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            UserEntity userEntity = new UserEntity();
+            userMapper.fromDto(userDto, userEntity);
             return userRepository.save(userEntity);
         } catch (CustomExceptions ex) {
             throw new CustomExceptions(ErrorType.DATABASE_ERROR);

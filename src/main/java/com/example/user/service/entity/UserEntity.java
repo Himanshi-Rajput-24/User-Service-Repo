@@ -4,7 +4,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 
 @Data
@@ -13,7 +13,7 @@ import java.util.Set;
 public class UserEntity {
     @Id
     @Column(unique = true, nullable = false)
-    private String id;
+    private String id = UUID.randomUUID().toString();
     @Column(unique = true, nullable = false)
     private String userName;
 
@@ -26,6 +26,8 @@ public class UserEntity {
 
     @Column( nullable = false)
     private String mobileNumber;
+
+    @Column(nullable = true)
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses;
   //  private Wishlist wishlist;

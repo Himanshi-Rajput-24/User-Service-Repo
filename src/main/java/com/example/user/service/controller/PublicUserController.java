@@ -1,5 +1,6 @@
 package com.example.user.service.controller;
 
+import com.example.user.service.dto.UserRequestDto;
 import com.example.user.service.entity.UserEntity;
 import com.example.user.service.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,9 +21,9 @@ public class PublicUserController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<String> createUser(@RequestBody UserEntity userEntity) {
+    public ResponseEntity<String> createUser(@RequestBody UserRequestDto userDto) {
         try {
-            userService.saveUser(userEntity);
+            userService.saveUser(userDto);
             return new ResponseEntity<>("User saved in db successfully", HttpStatus.CREATED);
         } catch (Exception ex) {
             log.error("Please Enter the Unique Username and EmailId"+ex);

@@ -2,25 +2,33 @@ package com.example.user.service.controller;
 
 import com.example.user.service.entity.Address;
 import com.example.user.service.entity.UserEntity;
+import com.example.user.service.repository.AddressRepository;
 import com.example.user.service.service.AddressService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RequestMapping("/address")
 @RestController
 @Slf4j
+@Tag(name= "Address Controller", description = "This Controller is used to store the address of users" )
 public class AddressController {
     private final AddressService addressService;
+    private final AddressRepository addressRepository;
 
-    public AddressController(AddressService addressService){
+    public AddressController(AddressService addressService, AddressRepository addressRepository){
         this.addressService = addressService;
+        this.addressRepository = addressRepository;
     }
 
-    @GetMapping("/getListOfAddress")
-    public void getListOfAddress(){}
+    @GetMapping("/getListOfUserAddresses/{userId}")
+    public List<Address> getListOfUserAddresses(@PathVariable String userId){
+        return addressRepository.findByUserId(userId);
+    }
 
     @PostMapping("/saveAddress/{user_id}")
     public ResponseEntity<String> saveAddress(@RequestBody Address address, @PathVariable String user_id){
